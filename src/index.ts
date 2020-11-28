@@ -9,7 +9,8 @@ export interface IAuthProviderConfig<T> {
     storage?: {
         getItem: (key: string) => any,
         setItem: (key: string, value: any) => void,
-        removeItem: (key: string) => void
+        removeItem: (key: string) => void,
+        updateItem: (key: string) => void,
     },
     customFetch?: typeof fetch
 }
@@ -27,7 +28,7 @@ export const createAuthProvider = <T>({
         accessTokenKey,
         localStorageKey,
         onUpdateToken,
-        storage
+        storage,
     });
 
     const login = (newTokens: T) => {
@@ -83,7 +84,8 @@ interface ITokenProviderConfig<T> {
     storage: {
         getItem: (key: string) => any,
         setItem: (key: string, value: any) => void,
-        removeItem: (key: string) => void
+        removeItem: (key: string) => void,
+        updateItem: (key: string) => void,
     }
 }
 
@@ -95,6 +97,8 @@ const createTokenProvider = <T>({
                                     storage
                                 }: ITokenProviderConfig<T>) => {
     let listeners: Array<(newLogged: boolean) => void> = [];
+    let isUpdating = false;
+    let resolvers: Array<() => void> = [];
 
     const getTokenInternal = (): T | null => {
         const data = storage.getItem(localStorageKey);
@@ -167,7 +171,13 @@ const createTokenProvider = <T>({
     const checkExpiry = async () => {
         const token = getTokenInternal();
         if (token && isExpired(getExpire(token))) {
+            isUpdating = true;
+
             const newToken = onUpdateToken ? await onUpdateToken(token) : null;
+
+            resolvers.forEach(resolver => resolver());
+            isUpdating = false;
+            resolvers = [];
 
             if (newToken) {
                 setToken(newToken);
@@ -178,6 +188,12 @@ const createTokenProvider = <T>({
     };
 
     const getToken = async () => {
+        if (isUpdating) {
+            return new Promise(resolve => {
+                resolvers.push(resolve);
+            });
+        }
+
         await checkExpiry();
 
         if (accessTokenKey) {
@@ -206,6 +222,16 @@ const createTokenProvider = <T>({
         const isLogged = isLoggedIn();
         listeners.forEach(l => l(isLogged));
     };
+
+    if (window) {
+        window.addEventListener('storage', (event) => {
+            if (event.storageArea === localStorage) {
+                storage.updateItem(localStorageKey);
+
+                notify();
+            }
+        }, false);
+    }
 
     return {
         getToken,
