@@ -98,7 +98,7 @@ const createTokenProvider = <T>({
                                 }: ITokenProviderConfig<T>) => {
     let listeners: Array<(newLogged: boolean) => void> = [];
     let isUpdating = false;
-    let resolvers: Array<() => void> = [];
+    let resolvers: Array<(token: T | null) => any> = [];
 
     const getTokenInternal = (): T | null => {
         const data = storage.getItem(localStorageKey);
@@ -175,7 +175,7 @@ const createTokenProvider = <T>({
 
             const newToken = onUpdateToken ? await onUpdateToken(token) : null;
 
-            resolvers.forEach(resolver => resolver());
+            resolvers.forEach(resolver => resolver(newToken));
             isUpdating = false;
             resolvers = [];
 
