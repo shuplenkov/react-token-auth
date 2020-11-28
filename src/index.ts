@@ -10,7 +10,7 @@ export interface IAuthProviderConfig<T> {
         getItem: (key: string) => any,
         setItem: (key: string, value: any) => void,
         removeItem: (key: string) => void,
-        updateItem: (key: string) => void,
+        updateItem: (key: string) => any,
     },
     customFetch?: typeof fetch
 }
@@ -85,7 +85,7 @@ interface ITokenProviderConfig<T> {
         getItem: (key: string) => any,
         setItem: (key: string, value: any) => void,
         removeItem: (key: string) => void,
-        updateItem: (key: string) => void,
+        updateItem: (key: string) => any,
     }
 }
 
@@ -226,9 +226,12 @@ const createTokenProvider = <T>({
     if (window) {
         window.addEventListener('storage', (event) => {
             if (event.storageArea === localStorage) {
-                storage.updateItem(localStorageKey);
+                const oldItem = storage.getItem(localStorageKey);
+                const updatedItem = storage.updateItem(localStorageKey);
 
-                notify();
+                if (oldItem !== updatedItem) {
+                    notify();
+                }
             }
         }, false);
     }
