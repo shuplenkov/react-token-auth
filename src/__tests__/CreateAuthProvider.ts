@@ -17,7 +17,11 @@ const createTestStore = (initData = {}) => {
         delete data[key];
     };
 
-    return {getItem, setItem, removeItem, getData}
+    const updateItem = (key: string) => {
+        return data[key];
+    };
+
+    return {getItem, setItem, removeItem, getData, updateItem}
 };
 
 
@@ -31,15 +35,15 @@ describe('CreateAuthProvider', () => {
         expect(storage.getData()).toEqual({REACT_TOKEN_AUTH_KEY: '"test token"'});
     });
 
-    it('Check that token by key provided to token auth', async () => {
+    it('Check that token by key provided to token auth', async() => {
         const storage = createTestStore();
         const [useAuth, authFetch, login, logout] = createAuthProvider({
             accessTokenKey: 'testKey',
-            //@ts-ignore
+            // @ts-ignore
             customFetch: async (input, init) => {
                 return {
-                    input,
                     init,
+                    input,
                 };
             },
             storage
