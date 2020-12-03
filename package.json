@@ -17,15 +17,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/obabichev/react-token-auth.git"
+    "url": "git+https://github.com/shuplenkov/react-token-auth.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/obabichev/react-token-auth/issues"
+    "url": "https://github.com/shuplenkov/react-token-auth/issues"
   },
-  "homepage": "https://github.com/obabichev/react-token-auth#readme",
+  "homepage": "https://github.com/shuplenkov/react-token-auth#readme",
   "devDependencies": {
     "@types/jest": "^24.0.25",
     "@types/react": "^16.9.17",
