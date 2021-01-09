@@ -102,8 +102,13 @@ const createTokenProvider = <T>({
 
     const getTokenInternal = (): T | null => {
         const data = storage.getItem(localStorageKey);
+        let token;
 
-        const token = (data && JSON.parse(data)) || null;
+        try {
+            token = (data && JSON.parse(data)) || null;
+        } catch (e) {
+            token = null;
+        }
 
         return token as T;
     };
