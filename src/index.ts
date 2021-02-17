@@ -29,8 +29,8 @@ export const createAuthProvider = <T>({
         accessTokenExpireKey,
         accessTokenKey,
         localStorageKey,
-        onUpdateToken,
         onHydratation,
+        onUpdateToken,
         storage,
     });
 

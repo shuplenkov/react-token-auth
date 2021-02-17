@@ -41,8 +41,8 @@ describe('CreateAuthProvider', () => {
             // @ts-ignore
             customFetch: async (input, init) => {
                 return {
-                    input,
                     init,
+                    input,
                 };
             },
             storage,
