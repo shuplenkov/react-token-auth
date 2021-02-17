@@ -21,5 +21,5 @@ export const createDefaultStore = (initData = {}) => {
         return data[key];
     };
 
-    return {getItem, setItem, removeItem, updateItem}
+    return { getItem, setItem, removeItem, updateItem }
 };

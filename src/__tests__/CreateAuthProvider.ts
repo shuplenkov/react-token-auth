@@ -1,4 +1,4 @@
-import {createAuthProvider} from '../index';
+import { createAuthProvider } from '../index';
 
 const createTestStore = (initData = {}) => {
     const data: any = initData;
@@ -21,18 +21,17 @@ const createTestStore = (initData = {}) => {
         return data[key];
     };
 
-    return {getItem, setItem, removeItem, getData, updateItem}
+    return { getItem, setItem, removeItem, getData, updateItem }
 };
-
 
 describe('CreateAuthProvider', () => {
     it('Check that token is stored', () => {
         const storage = createTestStore();
-        const [useAuth, authFetch, login, logout] = createAuthProvider({storage});
+        const [useAuth, authFetch, login, logout] = createAuthProvider({ storage });
 
         login('test token');
 
-        expect(storage.getData()).toEqual({REACT_TOKEN_AUTH_KEY: '"test token"'});
+        expect(storage.getData()).toEqual({ REACT_TOKEN_AUTH_KEY: '"test token"' });
     });
 
     it('Check that token by key provided to token auth', async() => {
@@ -42,14 +41,14 @@ describe('CreateAuthProvider', () => {
             // @ts-ignore
             customFetch: async (input, init) => {
                 return {
-                    init,
                     input,
+                    init,
                 };
             },
-            storage
+            storage,
         });
 
-        login({testKey: 'token-value'});
+        login({ testKey: 'token-value' });
 
         const response = await authFetch('');
         // @ts-ignore
